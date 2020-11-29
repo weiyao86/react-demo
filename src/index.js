@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App'
-import './common/style/frame.css'
+import './common/style/frame.scss'
 
 
 // class WelCome extends React.Component {
