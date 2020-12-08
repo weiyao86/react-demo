@@ -1,4 +1,10 @@
-$col : aqua;
+$col: aqua;
 .App {
     background-color: $col;
+}
+.p-home {
+    background: #f00;
+    h1 {
+        background: #f00;
+    }
 }

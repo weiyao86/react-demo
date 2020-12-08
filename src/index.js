@@ -1,10 +1,31 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-
-import App from './App'
+import dva from 'dva';
+import { StaticRouter, BrowserRouter } from 'dva/router';
+import createHistory from 'history/createBrowserHistory';
+import models from './models/global';
 import './common/style/frame.scss'
+import App from './App'
 
 
+const history = createHistory();
+
+const app = dva({
+  initialState: {},
+  history
+});
+
+app.model(models);
+
+app.router(props => (
+  <BrowserRouter>
+    <App className="container" />
+  </BrowserRouter>
+));
+
+const AppStart = app.start();
+
+ReactDOM.render(<AppStart className="container" />, document.getElementById("root"));
 // class WelCome extends React.Component {
 //   constructor(props) {
 //     super(props);
@@ -52,61 +73,61 @@ import './common/style/frame.scss'
 //   }
 // }
 
-let list = [
-  { category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football" },
-  { category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball" },
-  { category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball" },
-  { category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch" },
-  { category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5" },
-  { category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7" }
-];
-function Head1(props) {
-  return (<div> <div><input type="text" onChange={props.inputChange} value={props.val} /></div>
-    <div><label htmlFor="ck"><input id="ck" type="checkbox" />Only you choose</label></div>
-  </div>)
-}
+// let list = [
+//   { category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football" },
+//   { category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball" },
+//   { category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball" },
+//   { category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch" },
+//   { category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5" },
+//   { category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7" }
+// ];
+// function Head1(props) {
+//   return (<div> <div><input type="text" onChange={props.inputChange} value={props.val} /></div>
+//     <div><label htmlFor="ck"><input id="ck" type="checkbox" />Only you choose</label></div>
+//   </div>)
+// }
 
-function Body1(props) {
-  // console.log(props.list)
-  return (<div><ul>
-    {props.list.map((item, idx) => {
-      return <li key={idx}><h3>{item.category}--{item.name}</h3><p>{item.price}</p></li>
-    })}
+// function Body1(props) {
+//   // console.log(props.list)
+//   return (<div><ul>
+//     {props.list.map((item, idx) => {
+//       return <li key={idx}><h3>{item.category}--{item.name}</h3><p>{item.price}</p></li>
+//     })}
 
-  </ul></div>);
-}
+//   </ul></div>);
+// }
 
-class Demo extends React.Component {
-  constructor(props) {
-    super(props);
+// class Demo extends React.Component {
+//   constructor(props) {
+//     super(props);
 
-    this.onInputChange = this.onInputChange.bind(this);
-    this.state = { searchText: 'ball' };
-  }
+//     this.onInputChange = this.onInputChange.bind(this);
+//     this.state = { searchText: 'ball' };
+//   }
 
-  onInputChange(e) {
+//   onInputChange(e) {
 
-    let val = e.target.value;
+//     let val = e.target.value;
 
-    this.setState(state => ({
-      searchText: val
-    }))
-  }
-  render() {
-    let newList = [],
-      val = this.state.searchText;
+//     this.setState(state => ({
+//       searchText: val
+//     }))
+//   }
+//   render() {
+//     let newList = [],
+//       val = this.state.searchText;
 
-    if (!val) { newList = list; }
-    else {
-      newList = list.filter(item => {
+//     if (!val) { newList = list; }
+//     else {
+//       newList = list.filter(item => {
 
-        return item.name.toLowerCase().includes(val && val.toLowerCase())
-      });
+//         return item.name.toLowerCase().includes(val && val.toLowerCase())
+//       });
 
-      console.log(newList)
-    }
-    return (<div><Head1 inputChange={this.onInputChange} val={this.state.searchText} /><Body1 list={newList} /></div>)
-  }
-}
+//       console.log(newList)
+//     }
+//     return (<div><Head1 inputChange={this.onInputChange} val={this.state.searchText} /><Body1 list={newList} /></div>)
+//   }
+// }
 
-ReactDOM.render(<App className="container" />, document.getElementById("root"));
+// ReactDOM.render(<App className="container" />, document.getElementById("root"));
