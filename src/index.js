@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import dva from 'dva';
 import { StaticRouter, BrowserRouter } from 'dva/router';
+// import { StaticRouter, BrowserRouter, Route } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory';
 import models from './models/global';
 import './common/style/frame.scss'
@@ -19,13 +20,14 @@ app.model(models);
 
 app.router(props => (
   <BrowserRouter>
-    <App className="container" />
+    {/* <Route path={'/a'} component={App}></Route> */}
+    <App {...props}/>
   </BrowserRouter>
 ));
 
 const AppStart = app.start();
 
-ReactDOM.render(<AppStart className="container" />, document.getElementById("root"));
+ReactDOM.render(<AppStart />, document.getElementById("root"));
 // class WelCome extends React.Component {
 //   constructor(props) {
 //     super(props);

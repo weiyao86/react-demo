@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from '../../components/header';
 import './login.scss';
+import { Route, Redirect, Switch, Link } from 'dva/router';
 
 class Button extends Component {
   constructor(props) {
@@ -8,6 +9,8 @@ class Button extends Component {
     this.state = {
       stateLoginIs: this.props.loginis
     }
+
+    
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -42,6 +45,7 @@ class Login extends Component {
       loginis: 'false',
       obj:null
     }
+    this.gotoLogin=this.gotoLogin.bind(this);
   }
 
   * test() {
@@ -76,7 +80,7 @@ class Login extends Component {
 
     // for (let i = 0, item; i < 10 && (item = t.next()); i++) { console.log('========' + item.value) }
 
-    // this.props.history.push('/home');
+    this.props.history.push('/home');
     // this.setState((state, props) => ({ loginis: 231 }))
     // this.setState({ loginis: 1 })
     // console.log(this.state.loginis)
@@ -95,14 +99,14 @@ class Login extends Component {
     return null;
   }
   render() {
-    console.log('1')
     return (
       <div className="p-login">
         <Header />
+        {/* <Route path="/login" component={()=><Button  {...this.state}>Router 4 跳转Home</Button>}></Route> */}
         <h1>Login &#10;&#13; page</h1>
 
         {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
-        <Button onClick={this.onTest} kind="test" {...this.state}>跳转Home</Button>
+        <Button onClick={this.gotoLogin} kind="test" {...this.state}>跳转Home</Button>
       </div>
     )
   }
