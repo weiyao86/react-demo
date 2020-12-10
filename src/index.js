@@ -20,8 +20,8 @@ app.model(models);
 
 app.router(props => (
   <BrowserRouter>
-    {/* <Route path={'/a'} component={App}></Route> */}
-    <App {...props}/>
+    {/* <Route path={'/'} component={App}></Route> */}
+    <App {...props} />
   </BrowserRouter>
 ));
 

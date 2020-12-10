@@ -1,10 +1,11 @@
+@import "antd/dist/antd.css";
 $col: aqua;
 .App {
-    background-color: $col;
+  // background-color: $col;
 }
 .p-home {
+  background: #f00;
+  h1 {
     background: #f00;
-    h1 {
-        background: #f00;
-    }
+  }
 }
