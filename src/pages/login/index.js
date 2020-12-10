@@ -10,7 +10,7 @@ class Button extends Component {
       stateLoginIs: this.props.loginis
     }
 
-    
+
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -24,7 +24,7 @@ class Button extends Component {
     }
     return null;
   }
-  onTest(){
+  onTest() {
     alert('test')
   }
 
@@ -43,9 +43,9 @@ class Login extends Component {
     super(props);
     this.state = {
       loginis: 'false',
-      obj:null
+      obj: null
     }
-    this.gotoLogin=this.gotoLogin.bind(this);
+    this.gotoLogin = this.gotoLogin.bind(this);
   }
 
   * test() {
@@ -90,8 +90,12 @@ class Login extends Component {
     // console.log(this.state.loginis)
   }
 
-  componentDidUpdate() {
-    console.log('componentDidUpdate', this.state.obj)
+  componentDidUpdate(prevProps) {
+    
+    console.log("********")
+    const lc = this.props.location !== prevProps.location;
+    const lc1 = this.props.history.location !== prevProps.history.location;
+    console.log(lc, lc1)
   }
 
   static getDerivedStateFromProps(props, state) {

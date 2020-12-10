@@ -8,6 +8,11 @@ class Layout extends Component {
     this.state = {
       stateLoginIs: this.props.loginis
     }
+    debugger;
+  }
+
+  componentDidMount(){
+    
   }
 
   render() {
