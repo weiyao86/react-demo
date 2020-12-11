@@ -61,6 +61,9 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+const lessRegex = /\.(less)$/;
+const lessModuleRegex = /\.module\.(less)$/;
+
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
     return false;
@@ -136,6 +139,8 @@ module.exports = function (webpackEnv) {
       },
     ].filter(Boolean);
     if (preProcessor) {
+      console.log('************************', require.resolve(preProcessor))
+
       loaders.push(
         {
           loader: require.resolve('resolve-url-loader'),
@@ -147,7 +152,7 @@ module.exports = function (webpackEnv) {
         {
           loader: require.resolve(preProcessor),
           options: {
-            sourceMap: true,
+            sourceMap: true
           },
         }
       );
@@ -199,7 +204,7 @@ module.exports = function (webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? './static/js/[name].[contenthash:8].js'
+        ? 'static/js/[name].[contenthash:8].js'
         : isEnvDevelopment && 'static/js/bundle.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
@@ -396,6 +401,14 @@ module.exports = function (webpackEnv) {
                 customize: require.resolve(
                   'babel-preset-react-app/webpack-overrides'
                 ),
+                presets: [
+                  [
+                    require.resolve('babel-preset-react-app'),
+                    {
+                      runtime: hasJsxRuntime ? 'automatic' : 'classic',
+                    },
+                  ],
+                ],
 
                 plugins: [
                   [
@@ -522,6 +535,69 @@ module.exports = function (webpackEnv) {
                 },
                 'sass-loader'
               ),
+            }, {
+              test: lessRegex,
+              exclude: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 3,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
+                },
+                'less-loader'
+              ).concat({
+                loader: 'less-loader',
+                options: {
+                  sourceMap: true,
+
+                  modifyVars: {
+                    'primary-color': '#4D65FF', // 全局主色
+                    'link-color': '#4DC2FF', // 链接色
+                    'success-color': '#32B16C', // 成功色
+                    'warning-color': '#FEAE22', // 警告色
+                    'error-color': '#FF4D4F', // 错误色
+
+                    'font-size-base': '14px', // 主字号
+                    'heading-color': '#333', // 标题色
+                    'text-color': '#333', // 主文本色
+                    'text-color-secondary ': '#999', // 次文本色
+                    'disabled-color ': '#ccc', // 失效色
+                    'border-radius-base': '4px', // 组件/浮层圆角
+                    'border-color-base': '#E5E5E5', // 边框色
+                    'box-shadow-base': '0 2px 8px rgba(0, 0, 0, .15)', // 浮层阴影
+
+                    'screen-xs': 1,
+                    'screen-sm': 1,
+                    'screen-md': 1,
+                    'screen-lg': 1,
+                    'screen-xl': 1,
+                    'screen-xxl': 1,
+                  },
+                  javascriptEnabled: true,
+                }
+              }),
+              // Don't consider CSS imports dead code even if the
+              // containing package claims to have no side effects.
+              // Remove this when webpack adds a warning or an error for this.
+              // See https://github.com/webpack/webpack/issues/6571
+              sideEffects: true,
+            }, {
+              test: lessModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 3,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
+                },
+                'less-loader'
+              ),
+              // Don't consider CSS imports dead code even if the
+              // containing package claims to have no side effects.
+              // Remove this when webpack adds a warning or an error for this.
+              // See https://github.com/webpack/webpack/issues/6571
+              sideEffects: true,
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
@@ -665,6 +741,10 @@ module.exports = function (webpackEnv) {
         swSrc,
         dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
         exclude: [/\.map$/, /asset-manifest\.json$/, /LICENSE/],
+        // Bump up the default maximum size (2mb) that's precached,
+        // to make lazy-loading failure scenarios less likely.
+        // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       }),
       // TypeScript type checking
       useTypeScript &&
@@ -703,6 +783,7 @@ module.exports = function (webpackEnv) {
         formatter: require.resolve('react-dev-utils/eslintFormatter'),
         eslintPath: require.resolve('eslint'),
         context: paths.appSrc,
+        cache: true,
         // ESLint class options
         cwd: paths.appPath,
         resolvePluginsRelativeTo: __dirname,

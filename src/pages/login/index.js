@@ -106,7 +106,7 @@ class Login extends Component {
     return (
       <div className="p-login">
         <Header />
-        {/* <Route path="/login" component={()=><Button  {...this.state}>Router 4 跳转Home</Button>}></Route> */}
+       
         <h1>Login &#10;&#13; page</h1>
 
         {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
