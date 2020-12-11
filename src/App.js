@@ -17,7 +17,7 @@ class App extends React.Component {
         <li><Link to="/login">to-login</Link></li>
         <li><Link to="/home">to-home</Link></li>
         <li><Link to="/demo">to-demo</Link></li>
-        <li><Link to="/?id=5">to-layout</Link></li>
+        <li><Link to="/">to-layout</Link></li>
       </ul>
       <Switch>
         {RouterConfig.map((route, i) => (
