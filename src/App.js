@@ -1,16 +1,29 @@
 
 import React from 'react'
 import {
+  connect
+} from 'dva';
+import {
   Route, Redirect, Switch, Link, withRouter
 } from 'dva/router';
 
+
+
 import { Layout, Menu, Breadcrumb } from 'antd';
+
 import { UserOutlined, LaptopOutlined, NotificationOutlined, HomeOutlined } from '@ant-design/icons';
 import RouterConfig from './router';
 import { getBreadcrumbs } from './components/breadCrumbs';
 
+
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
+
+const flattenRouters = arr => arr.reduce(function (prev, item) {
+  let isArray = Array.isArray(item.routes);
+  prev.push(item);
+  return isArray ? prev.concat(flattenRouters(item.routes)) : prev;
+}, []);
 
 function RouteWithSubRoutes(route) {
   return (
@@ -18,13 +31,17 @@ function RouteWithSubRoutes(route) {
       path={route.path}
       exact={route.exact}
       render={(props) => {
-
-        return <route.component {...props} routes={route.routes}></route.component>
+        return route.render ? (
+          route.render({ ...props, route: route })
+        ) : (
+            <route.component {...props} routes={route.routes} />
+          )
       }}
     />
   );
 }
-
+@withRouter
+@connect(state => state)
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -38,13 +55,33 @@ class App extends React.Component {
     });
 
     this.state = {
-      defaultSelectKeys: ['1'],
+      defaultSelectKeys: ['/'],
       location: this.props.location
     };
   }
 
+  componentDidMount(prevProps) {
+    this.tet();
+
+  }
+
+  async tet() {
+    let rst = await this.props.dispatch({
+      type: 'globalModel/init',
+      payLoad: {
+        name: "test",
+        age: 43
+      },
+      cb(c) {
+        alert('已' + c.globalModel.globalState)
+      }
+    })
+    alert(rst)
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (props.location.pathname !== state.location.pathname) {
+      console.log([props.location.pathname])
       return {
         defaultSelectKeys: [props.location.pathname],
         location: props.location
@@ -53,13 +90,16 @@ class App extends React.Component {
     return null;
   }
 
+
+
   render() {
-    console.log('render')
+
     this.breadcrumbs = getBreadcrumbs(RouterConfig, this.props.location);
+    this.RouterConfigs = flattenRouters(RouterConfig);
     return (
       <Layout>
         <Header className="header">
-          <div className="logo" />
+          <div className="logo" >Logo</div>
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
             <Menu.Item key="1">nav 1</Menu.Item>
             <Menu.Item key="2">nav 2</Menu.Item>
@@ -70,7 +110,7 @@ class App extends React.Component {
           <Sider width={200} className="site-layout-background" collapsible={true}>
             <Menu
               mode="inline"
-              defaultSelectedKeys={this.defaultSelectKeys}
+              defaultSelectedKeys={this.state.defaultSelectKeys}
               defaultOpenKeys={['sub1']}
               style={{ height: '100%', borderRight: 0 }}
             >
@@ -79,14 +119,13 @@ class App extends React.Component {
                 let to = i.item.props['to'];
                 this.props.history.push(to, { exact: true });
               }}>
-                <Menu.Item key="1" to="/login" >to-login
-              </Menu.Item>
+                <Menu.Item key="/login" to="/login" >to-login </Menu.Item>
                 <SubMenu key="sub11" icon={<UserOutlined />} title="message">
-                  <Menu.Item key="15" to="/login/message">to-login-message</Menu.Item>
+                  <Menu.Item key="/login/message" to="/login/message">to-login-message</Menu.Item>
                 </SubMenu>
-                <Menu.Item key="2" to="/home">to-home</Menu.Item>
-                <Menu.Item key="3" to="/demo">to-demo</Menu.Item>
-                <Menu.Item key="4" to="/">to-layout</Menu.Item>
+                <Menu.Item key="/home" to="/home">to-home</Menu.Item>
+                <Menu.Item key="/demo" to="/demo">to-demo</Menu.Item>
+                <Menu.Item key="/" to="/">to-layout</Menu.Item>
 
               </SubMenu>
               <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
@@ -123,11 +162,11 @@ class App extends React.Component {
               }}
             >
               <Switch>
-                {RouterConfig.map((route, i) => (
+
+                {this.RouterConfigs.map((route, i) => (
                   <RouteWithSubRoutes key={i} {...route} />
                 ))}
 
-                {/* {renderRoutes(RouterConfig)} */}
               </Switch>
 
             </Content>
@@ -138,4 +177,4 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+export default App;

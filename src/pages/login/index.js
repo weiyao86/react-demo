@@ -57,9 +57,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState(_ => ({ loginis: 'true' }))
-    }, 3000);
+    this.setState(_ => ({ loginis: 'true' }))
   }
 
 
@@ -69,10 +67,7 @@ class Login extends Component {
     console.log(event.type); // => "click"
     const eventType = event.type; // => "click"
 
-    setTimeout(function () {
-      console.log(event.type); // => null
-      console.log(eventType); // => "click"
-    }, 2000);
+
 
     // t.forEach(item=>{
     //   console.log('========' + item)
@@ -91,7 +86,7 @@ class Login extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    
+
     console.log("********")
     const lc = this.props.location !== prevProps.location;
     const lc1 = this.props.history.location !== prevProps.history.location;
@@ -106,8 +101,11 @@ class Login extends Component {
     return (
       <div className="p-login">
         <Header />
-       
+
         <h1>Login &#10;&#13; page</h1>
+
+
+        {/* {renderRoutes(this.props.routes)} */}
 
         {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
         <Button onClick={this.gotoLogin} kind="test" {...this.state}>跳转Home</Button>
@@ -115,5 +113,4 @@ class Login extends Component {
     )
   }
 }
-
 export default Login;

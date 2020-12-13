@@ -17,6 +17,7 @@ class Class extends React.Component {
   }
 
   componentDidMount() {
+
     // let { match, location } = this.props;
 
     // let { path, url } = match;
@@ -57,38 +58,49 @@ class Demo extends React.Component {
   }
 }
 
-// const Demo = Class;
+const Demo1 = Class;
+
+function Msg() {
+  return <div style={{ background: "#f00" }}>MSGSSSSSSSSSSS</div>;
+}
 
 const routerConfig = [
   {
     path: '/',
     component: LazyMoudle(() => import(/* webpackChunkName: "pagesLayout" */ '../pages/layout')),
-    breadcrumbName:'layout',
+    breadcrumbName: 'layout',
+    exact: true
+  },
+  {
+    path: '/login/message3',
+    breadcrumbName: 'message3',
+    component: LazyMoudle(() => import(/* webpackChunkName: "pagesLayout" */ '../pages/layout')), //() => (<div>Message</div>),
     exact: true
   },
   {
     path: '/login',
     component: LazyMoudle(() => import(/* webpackChunkName: "pagesLogin" */ '../pages/login')),
-    breadcrumbName:'login',
-    routes:[{
-        path: '/login/message',
-        breadcrumbName:'message',
-        component:() => (<div>Message</div>),
-        exact: true
-    },{
-        path: '/login/message1',
-        breadcrumbName:'message1',
-        component:() => (<div>Message1111</div>),
-        exact: true
+    breadcrumbName: 'login',
+    exact: true,
+    routes: [{
+      path: '/login/message',
+      breadcrumbName: 'message',
+      component: () => (<div>Message188888888</div>),
+      // exact: true
+    }, {
+      path: '/login/message1',
+      breadcrumbName: 'message1',
+      component: () => (<div>Message1111</div>),
+      exact: true
     }]
   }, {
     path: '/home',
     component: LazyMoudle(() => import(/* webpackChunkName: "pagesHome" */ '../pages/home')),
-    breadcrumbName:'home'
+    breadcrumbName: 'home'
   }, {
     path: '/demo',
-    component: LazyMoudle(() => Demo),
-    breadcrumbName:'demo'
+    component: LazyMoudle(() => Demo1),
+    breadcrumbName: 'demo'
   }];
 
 export default routerConfig;

@@ -1,27 +1,40 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import dva from 'dva';
-import { StaticRouter, BrowserRouter } from 'dva/router';
-// import { StaticRouter, BrowserRouter, Route } from 'react-router-dom';
+import { StaticRouter, BrowserRouter, Route } from 'dva/router';
+import { renderRoutes } from 'react-router-config';
 import createHistory from 'history/createBrowserHistory';
 import models from './models/global';
 import './common/style/frame.scss'
 import App from './App'
 
 
+import RouterConfig from './router';
+
+function T(props) {
+  return <div>sss{props.children}</div>
+}
+
 const history = createHistory();
 
 const app = dva({
   initialState: {},
-  history
+  history,
+  onError(e, dispatch) {
+    console.log('***************dvajs-onError***************');
+    console.log(e.message);
+  }
 });
 
 app.model(models);
 
+// debugger;
+// let s = renderRoutes(RouterConfig);
 app.router(props => (
   <BrowserRouter>
-    {/* <Route path={'/'} component={App}></Route> */}
+    {/* <Route component={App}></Route> */}
     <App {...props} />
+
   </BrowserRouter>
 ));
 

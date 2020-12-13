@@ -10,7 +10,7 @@ export default function asyncComponent(cmp) {
 
     componentDidMount() {
       const cmpMethod = cmp();
-      
+
       if (cmpMethod.then)
         cmpMethod.then(mod => {
           this.setState({
