@@ -56,6 +56,9 @@ class Home extends Component {
     return (
       <>
         {/* <Wel ref={this.ref1} /> */}
+       
+
+
         <Header/>
         <div className="p-home"><h1>Home page</h1></div>
         <button onClick={this.gotoHome}>跳转Login</button>

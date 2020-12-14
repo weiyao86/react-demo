@@ -1,4 +1,5 @@
 import React from 'react'
+import { Spin } from 'antd';
 export default function asyncComponent(cmp) {
   class AsyncCmp extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ export default function asyncComponent(cmp) {
     render() {
       const C = this.state.component;
 
-      return C ? <C {...this.props} /> : <div>Loading...</div>;
+      return C ? <C {...this.props} /> : <Spin size="large" tip="Loading"/>;
     }
   }
 

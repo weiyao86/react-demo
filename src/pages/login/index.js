@@ -98,14 +98,12 @@ class Login extends Component {
     return null;
   }
   render() {
+    debugger;
     return (
       <div className="p-login">
         <Header />
 
         <h1>Login &#10;&#13; page</h1>
-
-
-        {/* {renderRoutes(this.props.routes)} */}
 
         {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
         <Button onClick={this.gotoLogin} kind="test" {...this.state}>跳转Home</Button>
