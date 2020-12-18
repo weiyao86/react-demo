@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Header from '../../components/header';
 import './index.scss';
 
@@ -6,16 +6,15 @@ class Layout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateLoginIs: this.props.loginis
-    }
+      // eslint-disable-next-line react/no-unused-state
+      stateLoginIs: this.props.loginis,
+    };
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   render() {
-    return (<div>layout</div>)
+    return <div>layout</div>;
   }
 }
 

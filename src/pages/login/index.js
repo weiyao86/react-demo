@@ -1,50 +1,46 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Header from '../../components/header';
 import './login.scss';
-import { Route, Redirect, Switch, Link } from 'dva/router';
+import {Route, Redirect, Switch, Link} from 'dva/router';
 
 class Button extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateLoginIs: this.props.loginis
-    }
-
-
+      stateLoginIs: this.props.loginis,
+    };
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log('props-----------', state)
+    console.log('props-----------', state);
     // debugger;
     if (props.loginis !== state.stateLoginIs) {
-
       return {
-        stateLoginIs: props.loginis
-      }
+        stateLoginIs: props.loginis,
+      };
     }
     return null;
   }
+
   onTest() {
-    alert('test')
+    alert('test');
   }
 
   render() {
     // debugger;
-    let { kind, ...others } = this.props;
-    return (<button className={kind} {...others}>{this.state.stateLoginIs}--{this.props.children}</button>)
+    const {kind, ...others} = this.props;
+    return (<button className={kind} {...others}>{this.state.stateLoginIs}--{this.props.children}</button>);
   }
 }
 
 
-
 class Login extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       loginis: 'false',
-      obj: null
-    }
+      obj: null,
+    };
     this.gotoLogin = this.gotoLogin.bind(this);
   }
 
@@ -57,16 +53,15 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.setState(_ => ({ loginis: 'true' }))
+    this.setState(_ => ({loginis: 'true'}));
   }
 
 
   gotoLogin(event) {
-    let t = this.test();
+    const t = this.test();
     console.log(event); // => nullified object.
     console.log(event.type); // => "click"
     const eventType = event.type; // => "click"
-
 
 
     // t.forEach(item=>{
@@ -81,22 +76,22 @@ class Login extends Component {
     // console.log(this.state.loginis)
     // this.setState({ loginis: 2 })
     // console.log(this.state.loginis)
-    this.setState({ obj: event })
+    this.setState({obj: event});
     // console.log(this.state.loginis)
   }
 
   componentDidUpdate(prevProps) {
-
-    console.log("********")
+    console.log('********');
     const lc = this.props.location !== prevProps.location;
     const lc1 = this.props.history.location !== prevProps.history.location;
-    console.log(lc, lc1)
+    console.log(lc, lc1);
   }
 
   static getDerivedStateFromProps(props, state) {
     // console.log('props-----------', state)
     return null;
   }
+
   render() {
     debugger;
     return (
@@ -108,7 +103,7 @@ class Login extends Component {
         {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
         <Button onClick={this.gotoLogin} kind="test" {...this.state}>跳转Home</Button>
       </div>
-    )
+    );
   }
 }
 export default Login;

@@ -35,10 +35,10 @@ const appPackageJson = require(paths.appPackageJson);
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 const webpackDevClientEntry = require.resolve(
-  'react-dev-utils/webpackHotDevClient'
+  'react-dev-utils/webpackHotDevClient',
 );
 const reactRefreshOverlayEntry = require.resolve(
-  'react-dev-utils/refreshOverlayInterop'
+  'react-dev-utils/refreshOverlayInterop',
 );
 
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
@@ -46,14 +46,14 @@ const reactRefreshOverlayEntry = require.resolve(
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
 const imageInlineSizeLimit = parseInt(
-  process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
+  process.env.IMAGE_INLINE_SIZE_LIMIT || '10000',
 );
 
 // Check if TypeScript is setup
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 // Get the path to the uncompiled service worker (if it exists).
-const swSrc = paths.swSrc;
+const {swSrc} = paths;
 
 // style files regexes
 const cssRegex = /\.css$/;
@@ -105,7 +105,7 @@ module.exports = function (webpackEnv) {
         // css is located in `static/css`, use '../../' to locate index.html folder
         // in production `paths.publicUrlOrPath` can be a relative path
         options: paths.publicUrlOrPath.startsWith('.')
-          ? { publicPath: '../../' }
+          ? {publicPath: '../../'}
           : {},
       },
       {
@@ -139,7 +139,7 @@ module.exports = function (webpackEnv) {
       },
     ].filter(Boolean);
     if (preProcessor) {
-      console.log('************************', require.resolve(preProcessor))
+      console.log('************************', require.resolve(preProcessor));
 
       loaders.push(
         {
@@ -152,9 +152,9 @@ module.exports = function (webpackEnv) {
         {
           loader: require.resolve(preProcessor),
           options: {
-            sourceMap: true
+            sourceMap: true,
           },
-        }
+        },
       );
     }
     return loaders;
@@ -291,7 +291,7 @@ module.exports = function (webpackEnv) {
               : false,
           },
           cssProcessorPluginOptions: {
-            preset: ['default', { minifyFontValues: { removeQuotes: false } }],
+            preset: ['default', {minifyFontValues: {removeQuotes: false}}],
           },
         }),
       ],
@@ -315,7 +315,7 @@ module.exports = function (webpackEnv) {
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
       modules: ['node_modules', paths.appNodeModules].concat(
-        modules.additionalModulePaths || []
+        modules.additionalModulePaths || [],
       ),
       // These are the reasonable defaults supported by the Node ecosystem.
       // We also include JSX as a common component filename extension to support
@@ -363,7 +363,7 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        { parser: { requireEnsure: false } },
+        {parser: {requireEnsure: false}},
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -399,7 +399,7 @@ module.exports = function (webpackEnv) {
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
-                  'babel-preset-react-app/webpack-overrides'
+                  'babel-preset-react-app/webpack-overrides',
                 ),
                 presets: [
                   [
@@ -448,7 +448,7 @@ module.exports = function (webpackEnv) {
                 presets: [
                   [
                     require.resolve('babel-preset-react-app/dependencies'),
-                    { helpers: true },
+                    {helpers: true},
                   ],
                 ],
                 cacheDirectory: true,
@@ -511,7 +511,7 @@ module.exports = function (webpackEnv) {
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
                 },
-                'sass-loader'
+                'sass-loader',
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -533,7 +533,7 @@ module.exports = function (webpackEnv) {
                     getLocalIdent: getCSSModuleLocalIdent,
                   },
                 },
-                'sass-loader'
+                'sass-loader',
               ),
             }, {
               test: lessRegex,
@@ -545,7 +545,7 @@ module.exports = function (webpackEnv) {
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
                 },
-                'less-loader'
+                'less-loader',
               ).concat({
                 loader: 'less-loader',
                 options: {
@@ -575,7 +575,7 @@ module.exports = function (webpackEnv) {
                     'screen-xxl': 1,
                   },
                   javascriptEnabled: true,
-                }
+                },
               }),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -591,7 +591,7 @@ module.exports = function (webpackEnv) {
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
                 },
-                'less-loader'
+                'less-loader',
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -645,8 +645,8 @@ module.exports = function (webpackEnv) {
                 minifyURLs: true,
               },
             }
-            : undefined
-        )
+            : undefined,
+        ),
       ),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
@@ -718,7 +718,7 @@ module.exports = function (webpackEnv) {
             return manifest;
           }, seed);
           const entrypointFiles = entrypoints.main.filter(
-            fileName => !fileName.endsWith('.map')
+            fileName => !fileName.endsWith('.map'),
           );
 
           return {
@@ -777,25 +777,26 @@ module.exports = function (webpackEnv) {
         // The formatter is invoked directly in WebpackDevServerUtils during development
         formatter: isEnvProduction ? typescriptFormatter : undefined,
       }),
-      new ESLintPlugin({
-        // Plugin options
-        extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
-        formatter: require.resolve('react-dev-utils/eslintFormatter'),
-        eslintPath: require.resolve('eslint'),
-        context: paths.appSrc,
-        cache: true,
-        // ESLint class options
-        cwd: paths.appPath,
-        resolvePluginsRelativeTo: __dirname,
-        baseConfig: {
-          extends: [require.resolve('eslint-config-react-app/base')],
-          rules: {
-            ...(!hasJsxRuntime && {
-              'react/react-in-jsx-scope': 'error',
-            }),
-          },
-        },
-      }),
+      // new ESLintPlugin({
+      //   // Plugin options
+      //   extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
+      //   formatter: require.resolve('react-dev-utils/eslintFormatter'),
+      //   eslintPath: require.resolve('eslint'),
+      //   context: paths.appSrc,
+      //   cache: true,
+      //   // ESLint class options
+      //   cwd: paths.appPath,
+      //   resolvePluginsRelativeTo: __dirname,
+      //   outputReport: false,
+      //   baseConfig: {
+      //     extends: [require.resolve('eslint-config-react-app/base')],
+      //     rules: {
+      //       ...(!hasJsxRuntime && {
+      //         'react/react-in-jsx-scope': 'error',
+      //       }),
+      //     },
+      //   },
+      // }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell webpack to provide empty mocks for them so importing them works.
