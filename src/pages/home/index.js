@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react';
 import Header from '../../components/header';
-import { connect } from 'dva';
-import './home.scss'
+import {connect} from 'dva';
+import './home.scss';
 
 
 // class Welcome extends Component {
@@ -34,19 +34,17 @@ import './home.scss'
 
 // @connect(state => state)
 class Home extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
 
     this.gotoHome = this.gotoHome.bind(this);
     this.ref1 = React.createRef();
     this.state = {
-      count: 1
+      count: 1,
     };
   }
 
   componentDidMount(previos) {
-
     console.log('==================>');
     console.log(this.state.count);
   }
@@ -56,26 +54,26 @@ class Home extends Component {
   }
 
   onChange() {
-    console.log(this.state.count)
+    console.log(this.state.count);
     // this.setState({
     //   count: this.state.count++
     // })
 
-    this.setState((state) => ({
-      count: ++state.count
-    }))
+    this.setState(state => ({
+      count: ++state.count,
+    }));
   }
 
   render() {
-    let { count } = this.state;
+    const {count} = this.state;
     return (
       <>
         {/* <Wel ref={this.ref1} /> */}
 
-        <Button user='test-namess' count={count}>{(s) => <div>{s.count}is meme---Children Props</div>}</Button>
+        <Button user="test-namess" count={count}>{s => <div>{s.count}is meme---Children Props</div>}</Button>
 
 
-        <ButtonRender user='test-name' count={count} render={(tt) => (<div>{tt.count}------Render Props</div>)}></ButtonRender>
+        <ButtonRender user="test-name" count={count} render={tt => (<div>{tt.count}------Render Props</div>)} />
 
         <Header />
         <div className="p-home" onClick={() => this.onChange()}><h1>Home page</h1></div>
@@ -86,7 +84,7 @@ class Home extends Component {
 }
 
 /**
- * 
+ *
  * @param {*} props 测试children
  */
 function Button(props) {
@@ -94,13 +92,14 @@ function Button(props) {
 }
 
 /**
- * 
+ *
  * @param {*} props  测试render props
  */
 class ButtonRender extends React.Component {
+  state={}
 
   static getDerivedStateFromProps() {
-    debugger;
+    return null;
   }
 
   shouldComponentUpdate(props, state) {
@@ -128,11 +127,10 @@ class ButtonRender extends React.Component {
 
   render() {
     debugger;
-    let { render, ...rest } = this.props;
+    const {render, ...rest} = this.props;
 
     return (<div {...rest}>{render && render(rest)}</div>);
   }
-
 }
 
 export default Home;

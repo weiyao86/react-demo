@@ -14,11 +14,11 @@ const model = {
   },
 
   reducers: {
-    set(state, { payload }) {
-      return { ...state, ...payload };
+    set(state, {payload}) {
+      return {...state, ...payload};
     },
     reset(state) {
-      return { ...state, ...model.state };
+      return {...state, ...model.state};
     },
 
   },
@@ -28,10 +28,10 @@ const model = {
 
 
     /* 编辑服务事业合伙人 */
-    * cancelAccount({ payload, callback }, { call }) {
+    * cancelAccount({payload, callback}, {call}) {
       const res = yield call(() => (setImmediate(() => console.log('setImmediate'))));
       callback && callback(res);
-    }
+    },
   },
 };
 export default model;
