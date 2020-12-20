@@ -46,7 +46,7 @@ class App extends React.Component {
   }
 
   componentDidMount(prevProps) {
-    this.tet();
+    // this.tet();
   }
 
   async tet() {
@@ -144,9 +144,9 @@ class App extends React.Component {
                   <span>{route.breadcrumbName}</span>
                 ) : (
                   <Link to={route.path}>
-                    {route.path === '/' && <Icon type="home" />}
-                    {route.breadcrumbName}
-                  </Link>
+                      {route.path === '/' && <Icon type="home" />}
+                      {route.breadcrumbName}
+                    </Link>
                 );
               }}
               routes={this.breadcrumbs}

@@ -1,5 +1,5 @@
-import React, {Fragment} from 'react';
-import {withRouter} from 'react-router';
+import React, { Fragment } from 'react';
+import { withRouter } from 'react-router';
 
 import LazyMoudle from './lazyMoudle';
 
@@ -58,7 +58,7 @@ class Demo extends React.Component {
 const Demo1 = Class;
 
 function Msg() {
-  return <div style={{background: '#f00'}}>MSGSSSSSSSSSSS</div>;
+  return <div style={{ background: '#f00' }}>MSGSSSSSSSSSSS</div>;
 }
 
 const routerConfig = [
@@ -76,7 +76,7 @@ const routerConfig = [
   },
   {
     path: '/login',
-    component: LazyMoudle(() => [import(/* webpackChunkName: "pagesLogin" */ '../pages/login')]),
+    component: LazyMoudle(() => [import(/* webpackChunkName: "pagesLogin" */ '../pages/login'), import(/* webpackChunkName: "pagesLoginModel" */ '../pages/login/model.js')]),
     breadcrumbName: 'login',
     exact: true,
     routes: [{
@@ -92,7 +92,7 @@ const routerConfig = [
     }],
   }, {
     path: '/home',
-    component: LazyMoudle(() => [import(/* webpackChunkName: "pagesHome" */ '../pages/home'), import(/* webpackChunkName: "pagesLogin" */ '../pages/home/model.js')]),
+    component: LazyMoudle(() => [import(/* webpackChunkName: "pagesHome" */ '../pages/home'), import(/* webpackChunkName: "pageshomeModel" */ '../pages/home/model.js')]),
     breadcrumbName: 'home',
   }, {
     path: '/demo',

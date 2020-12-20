@@ -1,18 +1,19 @@
-import React, { Fragment } from 'react';
+
+import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import dva from 'dva';
-import { StaticRouter, BrowserRouter, Route } from 'dva/router';
-import { renderRoutes } from 'react-router-config';
+import {StaticRouter, BrowserRouter, Route} from 'dva/router';
+import {renderRoutes} from 'react-router-config';
 import createHistory from 'history/createBrowserHistory';
 import models from './models/global';
-import './common/style/frame.scss'
-import App from './App'
+import './common/style/frame.scss';
+import App from './App';
 
 
-import RouterConfig from './router';
+// import RouterConfig from './router';
 
 function T(props) {
-  return <div>sss{props.children}</div>
+  return <div>sss{props.children}</div>;
 }
 
 const history = createHistory();
@@ -23,10 +24,12 @@ const app = dva({
   onError(e, dispatch) {
     console.log('***************dvajs-onError***************');
     console.log(e.message);
-  }
+  },
 });
 
 app.model(models);
+
+window.AppInstance = app;
 
 // debugger;
 // let s = renderRoutes(RouterConfig);
@@ -40,7 +43,7 @@ app.router(props => (
 
 const AppStart = app.start();
 
-ReactDOM.render(<AppStart />, document.getElementById("root"));
+ReactDOM.render(<AppStart />, document.getElementById('root'));
 // class WelCome extends React.Component {
 //   constructor(props) {
 //     super(props);

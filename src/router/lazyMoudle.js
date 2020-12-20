@@ -1,6 +1,12 @@
 import React from 'react';
-import {Spin} from 'antd';
+import { Spin } from 'antd';
+import { connect } from 'dva';
 
+const ModelsCache = {};
+
+@connect((state, b, c, d) => {
+  return { ...state };
+})
 export default function asyncComponent(cmp) {
   class AsyncCmp extends React.Component {
     constructor(props) {
@@ -12,6 +18,7 @@ export default function asyncComponent(cmp) {
     }
 
     componentDidMount() {
+      const { globalModel } = this.props;
       const cmpMethod = cmp();
 
       // 直接返回class
@@ -27,18 +34,29 @@ export default function asyncComponent(cmp) {
 
       Promise.all([component, model]).then((arr) => {
         const [c, m] = arr;
+
+        if (m) {
+          console.log(m)
+          window.AppInstance.model(m.default);
+        }
+
+        // setTimeout(() => {
         this.setState({
           component: c.default || c,
-          model: m && m.default || m,
+          model: m.default || m,
         });
-      }).catch((a, b, c) => {
-      });
+        // }, 300)
+
+      })
+        .catch((a, b, c) => {
+
+        });
     }
 
     render() {
       const C = this.state.component;
 
-      return C ? <C {...this.props} /> : <Spin size="large" tip="Loading"/>;
+      return C ? <C {...this.props} /> : <Spin size="large" tip="Loading" />;
     }
   }
 

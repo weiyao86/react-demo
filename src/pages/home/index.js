@@ -1,6 +1,6 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import Header from '../../components/header';
-import {connect} from 'dva';
+import { connect } from 'dva';
 import './home.scss';
 
 
@@ -65,7 +65,7 @@ class Home extends Component {
   }
 
   render() {
-    const {count} = this.state;
+    const { count } = this.state;
     return (
       <>
         {/* <Wel ref={this.ref1} /> */}
@@ -96,7 +96,7 @@ function Button(props) {
  * @param {*} props  测试render props
  */
 class ButtonRender extends React.Component {
-  state={}
+  state = {}
 
   static getDerivedStateFromProps() {
     return null;
@@ -127,7 +127,7 @@ class ButtonRender extends React.Component {
 
   render() {
     debugger;
-    const {render, ...rest} = this.props;
+    const { render, ...rest } = this.props;
 
     return (<div {...rest}>{render && render(rest)}</div>);
   }

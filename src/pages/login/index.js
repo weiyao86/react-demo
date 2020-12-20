@@ -1,6 +1,8 @@
+/* eslint-disable no-debugger */
 import React, {Component} from 'react';
 import Header from '../../components/header';
 import './login.scss';
+import {connect} from 'dva';
 import {Route, Redirect, Switch, Link} from 'dva/router';
 
 class Button extends Component {
@@ -33,7 +35,8 @@ class Button extends Component {
   }
 }
 
-
+// eslint-disable-next-line react/no-multi-comp
+@connect(state => state)
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +44,7 @@ class Login extends Component {
       loginis: 'false',
       obj: null,
     };
+
     this.gotoLogin = this.gotoLogin.bind(this);
   }
 
@@ -53,6 +57,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    debugger;
     this.setState(_ => ({loginis: 'true'}));
   }
 
@@ -93,7 +98,6 @@ class Login extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="p-login">
         <Header />
