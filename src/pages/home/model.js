@@ -1,6 +1,6 @@
 
 const model = {
-  namespace: 'accountAssociated',
+  namespace: 'homeModel',
 
   state: {
 

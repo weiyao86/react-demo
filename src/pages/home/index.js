@@ -1,38 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, {Component, Fragment} from 'react';
 import Header from '../../components/header';
-import { connect } from 'dva';
+import {connect} from 'dva';
 import './home.scss';
 
 
-// class Welcome extends Component {
-//     constructor(props) {
-//         super(props);
-//     }
-//     render() {
-//         return (<div>Welcome to CQ</div>);
-//     }
-// }
-
-// // 高阶组件透传[ref]
-// function logEnhance() {
-//     class LogEnhance extends Component {
-//         constructor(props) {
-//             super(props);
-//         }
-
-//         render() {
-//             const { forwardRef, ...rest } = this.props;
-//             return (<Welcome ref={forwardRef} {...rest} />);
-//         }
-//     }
-//     return React.forwardRef((props, ref) => {
-//         return <LogEnhance {...props} forwardRef={ref}></LogEnhance>
-//     });
-// }
-
-// const Wel = logEnhance(Welcome);
-
-// @connect(state => state)
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -50,7 +21,7 @@ class Home extends Component {
   }
 
   gotoHome() {
-    this.props.history.push('/login');
+    this.props.history.push('/');
   }
 
   onChange() {
@@ -65,7 +36,7 @@ class Home extends Component {
   }
 
   render() {
-    const { count } = this.state;
+    const {count} = this.state;
     return (
       <>
         {/* <Wel ref={this.ref1} /> */}
@@ -77,7 +48,7 @@ class Home extends Component {
 
         <Header />
         <div className="p-home" onClick={() => this.onChange()}><h1>Home page</h1></div>
-        <button onClick={this.gotoHome}>跳转Login</button>
+        <button onClick={this.gotoHome}>跳转首页</button>
       </>
     );
   }
@@ -95,6 +66,7 @@ function Button(props) {
  *
  * @param {*} props  测试render props
  */
+// eslint-disable-next-line react/no-multi-comp
 class ButtonRender extends React.Component {
   state = {}
 
@@ -103,7 +75,6 @@ class ButtonRender extends React.Component {
   }
 
   shouldComponentUpdate(props, state) {
-    debugger;
     return true;
   }
 
@@ -111,23 +82,19 @@ class ButtonRender extends React.Component {
   //   debugger;
   // }
 
-  componentDidMount() { debugger; }
+  componentDidMount() { }
 
   componentDidUpdate() {
-    debugger;
   }
 
   componentDidCatch() {
-    debugger;
   }
 
   componentWillUnmount() {
-    debugger;
   }
 
   render() {
-    debugger;
-    const { render, ...rest } = this.props;
+    const {render, ...rest} = this.props;
 
     return (<div {...rest}>{render && render(rest)}</div>);
   }

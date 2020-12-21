@@ -35,20 +35,20 @@ export default function asyncComponent(cmp) {
       Promise.all([component, model]).then((arr) => {
         const [c, m] = arr;
 
-        if (m) {
-          console.log(m)
-          window.AppInstance.model(m.default);
+        const ns=m.default;
+        if (ns) {
+          if(ns &&  !ModelsCache[ns]){
+            window.AppInstance.model(ns);
+            ModelsCache[ns]=1;
+          }
         }
 
-        // setTimeout(() => {
         this.setState({
           component: c.default || c,
           model: m.default || m,
         });
-        // }, 300)
 
-      })
-        .catch((a, b, c) => {
+      }).catch((a, b, c) => {
 
         });
     }
