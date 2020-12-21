@@ -1,12 +1,10 @@
 import React from 'react';
 import {connect} from 'dva';
 import {Route, Redirect, Switch, Link, withRouter} from 'dva/router';
-import {convertRoutes} from 'dva-router-config';
-import {matchRoutes, renderRoutes} from 'react-router-config';
+import {matchRoutes} from 'react-router-config';
 
 import {Layout, Menu, Breadcrumb, Icon} from 'antd';
 
-// import { UserOutlined, LaptopOutlined, NotificationOutlined, HomeOutlined } from '@ant-design/icons';
 import RouterConfig from './router';
 import {getBreadcrumbs} from './components/breadCrumbs';
 
@@ -20,14 +18,23 @@ const flattenRouters = arr =>
     return isArray ? prev.concat(flattenRouters(item.routes)) : prev;
   }, []);
 
-function RouteWithSubRoutes(route) {
-  return (
-    <Route
-      path={route.path}
-      exact={route.exact}
-      render={props => (route.render ? route.render({...props, route}) : <route.component {...props} routes={route.routes} />)}
-    />
-  );
+function initSetRoute(routes) {
+  let arr = [];
+  if (Array.isArray(routes)) {
+    routes.forEach((item) => {
+      const nextRoute = Array.isArray(item.routes) ? item.routes : item;
+      const temp = initSetRoute(nextRoute);
+      arr = [...arr, ...temp];
+    });
+  } else {
+    arr.push(<Route
+      path={routes.path}
+      key={routes.path}
+      exact={routes.exact}
+      render={props => (routes.render ? routes.render({...props, routes}) : <routes.component {...props} routes={routes} />)}
+    />);
+  }
+  return arr;
 }
 @withRouter
 @connect(state => state)
@@ -65,17 +72,17 @@ class App extends React.Component {
     alert(rst);
   }
 
-  // static getDerivedStateFromProps(props, state) {
-  //   if (props.location.pathname !== state.location.pathname) {
-  //     console.log([props.location.pathname]);
+  static getDerivedStateFromProps(props, state) {
+    if (props.location.pathname !== state.location.pathname) {
+      console.log([props.location.pathname]);
 
-  //     return {
-  //       defaultSelectKeys: [props.location.pathname],
-  //       location: props.location,
-  //     };
-  //   }
-  //   return null;
-  // }
+      return {
+        defaultSelectKeys: [props.location.pathname],
+        location: props.location,
+      };
+    }
+    return null;
+  }
 
   initDynamicMenu=(routes) => {
     let menu = [];
@@ -104,15 +111,18 @@ class App extends React.Component {
 
   render() {
     const menus = [...RouterConfig];
+    // 递归设置路由
+    const setRouter = initSetRoute(RouterConfig);
+    // 面包屑
     this.breadcrumbs = getBreadcrumbs([...menus], this.props.location);
+    // 菜单打平
     this.routerConfigs = flattenRouters([...menus]);
-
+    // 加载菜单
     const menu = this.initDynamicMenu([...menus]);
-
-    // debugger;
+    // TODO:待加入递归查询
     const curRoute = matchRoutes(this.routerConfigs, this.props.location.pathname);
-
-    const stKey = curRoute[0].route.path || '/';
+    // 设置当前选中菜单
+    const stKey = curRoute[0] && curRoute[0].route.path || '/';
 
     return (
       <Layout>
@@ -137,6 +147,7 @@ class App extends React.Component {
             >
 
               {menu}
+
             </Menu>
           </Sider>
           <Layout style={{padding: '0 24px 24px'}}>
@@ -165,9 +176,7 @@ class App extends React.Component {
               }}
             >
               <Switch>
-                {this.routerConfigs.map((route, i) => (
-                  <RouteWithSubRoutes key={i} {...route} />
-                ))}
+                {setRouter}
               </Switch>
             </Content>
           </Layout>
