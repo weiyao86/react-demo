@@ -1,5 +1,7 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useState} from 'react';
 import {withRouter} from 'react-router';
+import {CheckList, PullToRefresh, List} from 'antd-mobile';
+import {sleep} from 'antd-mobile/es/utils/sleep';
 import LazyMoudle from './lazyMoudle';
 
 /**
@@ -56,7 +58,6 @@ class Demo extends React.Component {
 
 const Demo1 = Class;
 
-<<<<<<< HEAD
 let current = 1;
 
 function getNextData() {
@@ -67,46 +68,31 @@ function getNextData() {
   }
   return ret;
 }
-class Msg extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      count: 2,
-    };
-  }
-
-  render() {
-    const {data} = this.state;
-    return (<div style={{background: '#f00'}}>MSGSSSSSSSSSSS2256
-      <CheckList defaultValue={['B']}>
-        <CheckList.Item value="A">A</CheckList.Item>
-        <CheckList.Item value="B">B</CheckList.Item>
-        <CheckList.Item value="C" disabled>
-          C
-        </CheckList.Item>
-        <CheckList.Item value="D" readOnly>
-          D
-        </CheckList.Item>
-      </CheckList>
-      <PullToRefresh
-        onRefresh={async () => {
-          await sleep(1000);
-          this.setState({data: [...getNextData(), ...data]});
-        }}
-      >
-        <List style={{minHeight: '100vh'}}>
-          {data.map(item => (
-            <List.Item key={item}>{item}</List.Item>
-          ))}
-        </List>
-      </PullToRefresh>
-    </div>);
-  }
-=======
 function Msg() {
-  return <div style={{background: '#f00'}}>MSGSSSSSSSSSSS</div>;
->>>>>>> 3111ff44db2e17b41861f346aede13b5c88be191
+  const [data, setData] = useState(() => getNextData());
+  return (<div style={{background: '#f00'}}><CheckList defaultValue={['B']}>
+    <CheckList.Item value="A">A</CheckList.Item>
+    <CheckList.Item value="B">B</CheckList.Item>
+    <CheckList.Item value="C" disabled>
+      C
+    </CheckList.Item>
+    <CheckList.Item value="D" readOnly>
+      D
+    </CheckList.Item>
+  </CheckList>
+    <PullToRefresh
+      onRefresh={async () => {
+        await sleep(1000);
+        setData([...getNextData(), ...data]);
+      }}
+    >
+      <List style={{minHeight: '100vh'}}>
+        {data.map(item => (
+          <List.Item key={item}>{item}</List.Item>
+        ))}
+      </List>
+    </PullToRefresh>
+  </div>);
 }
 
 const routerConfig = [
@@ -126,12 +112,8 @@ const routerConfig = [
     routes: [{
       path: '/login/message',
       breadcrumbName: 'message',
-<<<<<<< HEAD
-      component: () => <Msg />,
-=======
-      component: () => (<div>Message188888888</div>),
+      component: () => (<Msg />),
       title: '登录消息1',
->>>>>>> 3111ff44db2e17b41861f346aede13b5c88be191
       // exact: true
     }, {
       path: '/login/message1',
