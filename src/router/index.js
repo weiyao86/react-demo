@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
-import { withRouter } from 'react-router';
-
+import React, {Fragment} from 'react';
+import {withRouter} from 'react-router';
+import {PullToRefresh, List, CheckList} from 'antd-mobile';
+import {sleep} from 'antd-mobile/es/utils/sleep';
 import LazyMoudle from './lazyMoudle';
 
 /**
@@ -57,8 +58,52 @@ class Demo extends React.Component {
 
 const Demo1 = Class;
 
-function Msg() {
-  return <div style={{ background: '#f00' }}>MSGSSSSSSSSSSS</div>;
+let current = 1;
+
+function getNextData() {
+  const ret = [];
+  for (let i = 0; i < 18; i++) {
+    ret.unshift(current.toString());
+    current++;
+  }
+  return ret;
+}
+class Msg extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      count: 2,
+    };
+  }
+
+  render() {
+    const {data} = this.state;
+    return (<div style={{background: '#f00'}}>MSGSSSSSSSSSSS2256
+      <CheckList defaultValue={['B']}>
+        <CheckList.Item value="A">A</CheckList.Item>
+        <CheckList.Item value="B">B</CheckList.Item>
+        <CheckList.Item value="C" disabled>
+          C
+        </CheckList.Item>
+        <CheckList.Item value="D" readOnly>
+          D
+        </CheckList.Item>
+      </CheckList>
+      <PullToRefresh
+        onRefresh={async () => {
+          await sleep(1000);
+          this.setState({data: [...getNextData(), ...data]});
+        }}
+      >
+        <List style={{minHeight: '100vh'}}>
+          {data.map(item => (
+            <List.Item key={item}>{item}</List.Item>
+          ))}
+        </List>
+      </PullToRefresh>
+    </div>);
+  }
 }
 
 const routerConfig = [
@@ -82,7 +127,7 @@ const routerConfig = [
     routes: [{
       path: '/login/message',
       breadcrumbName: 'message',
-      component: () => (<div>Message188888888</div>),
+      component: () => <Msg />,
       // exact: true
     }, {
       path: '/login/message1',
