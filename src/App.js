@@ -1,10 +1,10 @@
 import React from 'react';
 import {connect} from 'dva';
 import {Route, Redirect, Switch, Link, withRouter} from 'dva/router';
+import {matchRoutes} from 'react-router-config';
 
 import {Layout, Menu, Breadcrumb, Icon} from 'antd';
 
-// import { UserOutlined, LaptopOutlined, NotificationOutlined, HomeOutlined } from '@ant-design/icons';
 import RouterConfig from './router';
 import {getBreadcrumbs} from './components/breadCrumbs';
 
@@ -18,14 +18,23 @@ const flattenRouters = arr =>
     return isArray ? prev.concat(flattenRouters(item.routes)) : prev;
   }, []);
 
-function RouteWithSubRoutes(route) {
-  return (
-    <Route
-      path={route.path}
-      exact={route.exact}
-      render={props => (route.render ? route.render({...props, route}) : <route.component {...props} routes={route.routes} />)}
-    />
-  );
+function initSetRoute(routes) {
+  let arr = [];
+  if (Array.isArray(routes)) {
+    routes.forEach((item) => {
+      const nextRoute = Array.isArray(item.routes) ? item.routes : item;
+      const temp = initSetRoute(nextRoute);
+      arr = [...arr, ...temp];
+    });
+  } else {
+    arr.push(<Route
+      path={routes.path}
+      key={routes.path}
+      exact={routes.exact}
+      render={props => (routes.render ? routes.render({...props, routes}) : <routes.component {...props} routes={routes} />)}
+    />);
+  }
+  return arr;
 }
 @withRouter
 @connect(state => state)
@@ -33,11 +42,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.unlisten = this.props.history.listen((location, action) => {
-      if (location.pathname !== this.state.location.pathname) {
-        // this.setState({defaultSelectKeys: [location.pathname],location})
-      }
-    });
+    // this.unlisten = this.props.history.listen((location, action) => {
+    //   if (location.pathname !== this.state.location.pathname) {
+    //     this.setState({defaultSelectKeys: [location.pathname], location});
+    //   }
+    // });
 
     this.state = {
       defaultSelectKeys: ['/'],
@@ -66,6 +75,7 @@ class App extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.location.pathname !== state.location.pathname) {
       console.log([props.location.pathname]);
+
       return {
         defaultSelectKeys: [props.location.pathname],
         location: props.location,
@@ -74,9 +84,46 @@ class App extends React.Component {
     return null;
   }
 
+  initDynamicMenu=(routes) => {
+    let menu = [];
+    routes.map((item) => {
+      if (Array.isArray(item.routes)) {
+        const m = (<SubMenu
+          key={item.path}
+          title={
+            <span>
+              <Icon type="user" />
+              <span>{item.title}</span>
+            </span>
+          }
+        >
+          {this.initDynamicMenu(item.routes)}
+        </SubMenu>);
+        menu = [...menu, m];
+      } else {
+        menu.push(<Menu.Item key={item.path} to={item.path}>{item.title}</Menu.Item>);
+      }
+      return [];
+    });
+
+    return menu;
+  }
+
   render() {
-    this.breadcrumbs = getBreadcrumbs(RouterConfig, this.props.location);
-    this.RouterConfigs = flattenRouters(RouterConfig);
+    const menus = [...RouterConfig];
+    // 递归设置路由
+    const setRouter = initSetRoute(RouterConfig);
+    // 面包屑
+    this.breadcrumbs = getBreadcrumbs([...menus], this.props.location);
+    // 菜单打平
+    this.routerConfigs = flattenRouters([...menus]);
+    // 加载菜单
+    const menu = this.initDynamicMenu([...menus]);
+    // TODO:待加入递归查询
+    const curRoute = matchRoutes(this.routerConfigs, this.props.location.pathname);
+    // 设置当前选中菜单
+    const stKey = curRoute[0] && curRoute[0].route.path || '/';
+
     return (
       <Layout>
         <Header className="header">
@@ -89,50 +136,18 @@ class App extends React.Component {
         </Header>
         <Layout>
           <Sider width={200} className="site-layout-background" collapsible>
-            <Menu mode="inline" defaultSelectedKeys={this.state.defaultSelectKeys} defaultOpenKeys={['sub1']} style={{height: '100%', borderRight: 0}}>
-              <SubMenu
-                key="sub1"
-                title={
-                  <span>
-                    <Icon type="user" />
-                    <span>Navigation One</span>
-                  </span>
-                }
-                onClick={(i, j) => {
-                  const {to} = i.item.props;
-                  this.props.history.push(to, {exact: true});
-                }}
-              >
-                <Menu.Item key="/login" to="/login">
-                  to-login{' '}
-                </Menu.Item>
-                <SubMenu key="sub11" icon={<Icon type="user" />} title="message">
-                  <Menu.Item key="/login/message" to="/login/message">
-                    to-login-message
-                  </Menu.Item>
-                </SubMenu>
-                <Menu.Item key="/home" to="/home">
-                  to-home
-                </Menu.Item>
-                <Menu.Item key="/demo" to="/demo">
-                  to-demo
-                </Menu.Item>
-                <Menu.Item key="/" to="/">
-                  to-layout
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu key="sub2" icon={<Icon type="user" />} title="subnav 2">
-                <Menu.Item key="5">option5</Menu.Item>
-                <Menu.Item key="6">option6</Menu.Item>
-                <Menu.Item key="7">option7</Menu.Item>
-                <Menu.Item key="8">option8</Menu.Item>
-              </SubMenu>
-              <SubMenu key="sub3" icon={<Icon type="smile" rotate={180} />} title="subnav 3">
-                <Menu.Item key="9">option9</Menu.Item>
-                <Menu.Item key="10">option10</Menu.Item>
-                <Menu.Item key="11">option11</Menu.Item>
-                <Menu.Item key="12">option12</Menu.Item>
-              </SubMenu>
+            <Menu
+              mode="inline"
+              style={{height: '100%', borderRight: 0}}
+              // defaultSelectKeys={['/']}
+              selectedKeys={[stKey]}
+              onClick={(item, key, keyPath, domEvent) => {
+                this.props.history.push(item.key, {exact: true});
+              }}
+            >
+
+              {menu}
+
             </Menu>
           </Sider>
           <Layout style={{padding: '0 24px 24px'}}>
@@ -144,9 +159,9 @@ class App extends React.Component {
                   <span>{route.breadcrumbName}</span>
                 ) : (
                   <Link to={route.path}>
-                      {route.path === '/' && <Icon type="home" />}
-                      {route.breadcrumbName}
-                    </Link>
+                    {route.path === '/' && <Icon type="home" />}
+                    {route.breadcrumbName}
+                  </Link>
                 );
               }}
               routes={this.breadcrumbs}
@@ -161,9 +176,7 @@ class App extends React.Component {
               }}
             >
               <Switch>
-                {this.RouterConfigs.map((route, i) => (
-                  <RouteWithSubRoutes key={i} {...route} />
-                ))}
+                {setRouter}
               </Switch>
             </Content>
           </Layout>

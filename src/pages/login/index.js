@@ -1,112 +1,70 @@
-/* eslint-disable no-debugger */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'dva';
+import {withRouter} from 'dva/router';
+import {Form, Icon, Input, Button} from 'antd';
 import Header from '../../components/header';
 import './login.scss';
-import {connect} from 'dva';
-import {Route, Redirect, Switch, Link} from 'dva/router';
 
-class Button extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      stateLoginIs: this.props.loginis,
-    };
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    console.log('props-----------', state);
-    // debugger;
-    if (props.loginis !== state.stateLoginIs) {
-      return {
-        stateLoginIs: props.loginis,
-      };
-    }
-    return null;
-  }
-
-  onTest() {
-    alert('test');
-  }
-
-  render() {
-    // debugger;
-    const {kind, ...others} = this.props;
-    return (<button className={kind} {...others}>{this.state.stateLoginIs}--{this.props.children}</button>);
-  }
-}
-
-// eslint-disable-next-line react/no-multi-comp
+@withRouter
 @connect(state => state)
+@Form.create()
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loginis: 'false',
-      obj: null,
+      // eslint-disable-next-line react/no-unused-state
+      stateLoginIs: this.props.loginis,
     };
-
-    this.gotoLogin = this.gotoLogin.bind(this);
   }
 
-  * test() {
-    let test = 'tt';
-    yield test;
-    test = 'dd';
-    yield test;
-    return 55;
-  }
+  componentDidMount() {}
 
-  componentDidMount() {
-    debugger;
-    this.setState(_ => ({loginis: 'true'}));
-  }
+  hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const {history} = this.props;
 
-  gotoLogin(event) {
-    const t = this.test();
-    console.log(event); // => nullified object.
-    console.log(event.type); // => "click"
-    const eventType = event.type; // => "click"
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
 
-
-    // t.forEach(item=>{
-    //   console.log('========' + item)
-    // })
-
-    // for (let i = 0, item; i < 10 && (item = t.next()); i++) { console.log('========' + item.value) }
-
-    this.props.history.push('/home');
-    // this.setState((state, props) => ({ loginis: 231 }))
-    // this.setState({ loginis: 1 })
-    // console.log(this.state.loginis)
-    // this.setState({ loginis: 2 })
-    // console.log(this.state.loginis)
-    this.setState({obj: event});
-    // console.log(this.state.loginis)
-  }
-
-  componentDidUpdate(prevProps) {
-    console.log('********');
-    const lc = this.props.location !== prevProps.location;
-    const lc1 = this.props.history.location !== prevProps.history.location;
-    console.log(lc, lc1);
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    // console.log('props-----------', state)
-    return null;
-  }
+        history.push({
+          pathname: '/home',
+        });
+      }
+    });
+  };
 
   render() {
+    const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
+    const formLayout = 'horizontal'; // inline 'vertical'; 'horizontal';
+    const formItemLayout = formLayout === 'horizontal' ? {labelCol: {span: 4}, wrapperCol: {span: 14}} : null;
+    const buttonItemLayout = formLayout === 'horizontal' ? {wrapperCol: {span: 14, offset: 4}} : null;
+    const usernameError = isFieldTouched('username') && getFieldError('username');
+    const passwordError = isFieldTouched('password') && getFieldError('password');
+
     return (
-      <div className="p-login">
-        <Header />
-
-        <h1>Login &#10;&#13; page</h1>
-
-        {/* <Button kind="test" onClick={() => console.log('log')} onFocus={_ => alert('focus')}>Hello button1</Button> */}
-        <Button onClick={this.gotoLogin} kind="test" {...this.state}>跳转Home</Button>
-      </div>
+      <>
+        <Header/>
+        <Form layout={formLayout} onSubmit={this.handleSubmit}>
+          <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''} label="用户名" {...formItemLayout}>
+            {getFieldDecorator('username', {
+              rules: [{required: true, message: 'Please input your username!'}],
+            })(<Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}} />} placeholder="Username" />)}
+          </Form.Item>
+          <Form.Item validateStatus={passwordError ? 'error' : ''} help={passwordError || ''} label="密码" {...formItemLayout}>
+            {getFieldDecorator('password', {
+              rules: [{required: true, message: 'Please input your Password!'}],
+            })(<Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}} />} type="password" placeholder="Password" />)}
+          </Form.Item>
+          <Form.Item {...buttonItemLayout}>
+            <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsError())}>
+              Log in
+            </Button>
+          </Form.Item>
+        </Form>
+      </>
     );
   }
 }
